@@ -11,20 +11,33 @@ import shutil
 import subprocess
 import sys
 
-from _runtime import MODEL, SDK_SPEC, ImagegenConfigError, effective_base_url, load_secret
+from _runtime import (
+    MODEL,
+    SDK_SPEC,
+    ImagegenConfigError,
+    effective_base_url,
+    load_secret,
+    runtime_has_pinned_sdk,
+    runtime_python_path,
+)
 
 
 OFFICIAL_SCRIPT = Path(__file__).resolve().parent.parent / "vendor" / "openai-imagegen" / "scripts" / "image_gen.py"
 
 
 def runtime_command(dry_run: bool) -> list[str]:
-    if dry_run or importlib.util.find_spec("openai") is not None:
+    if dry_run:
+        return [sys.executable, str(OFFICIAL_SCRIPT)]
+    configured_python = runtime_python_path()
+    if configured_python.is_file() and runtime_has_pinned_sdk(configured_python):
+        return [str(configured_python), str(OFFICIAL_SCRIPT)]
+    if importlib.util.find_spec("openai") is not None:
         return [sys.executable, str(OFFICIAL_SCRIPT)]
     uv = shutil.which("uv")
     if uv:
         return [uv, "run", "--quiet", "--with", SDK_SPEC, "python", str(OFFICIAL_SCRIPT)]
     raise ImagegenConfigError(
-        "the OpenAI Python SDK is unavailable; install uv or install the pinned OpenAI SDK in this Python environment"
+        "the image runtime is unavailable; run scripts/setup.py once or install uv"
     )
 
 

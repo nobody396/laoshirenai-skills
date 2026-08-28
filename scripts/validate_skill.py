@@ -25,6 +25,7 @@ def main() -> int:
         "scripts/configure.py",
         "scripts/doctor.py",
         "scripts/imagegen.py",
+        "scripts/setup.py",
         "vendor/openai-imagegen/scripts/image_gen.py",
         "LICENSE.txt",
         "NOTICE",

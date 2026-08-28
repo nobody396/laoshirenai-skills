@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 from typing import Any
 
@@ -41,6 +42,16 @@ def metadata_path() -> Path:
 
 def secret_file_path() -> Path:
     return config_dir() / "secret.key"
+
+
+def runtime_dir() -> Path:
+    return config_dir() / "runtime"
+
+
+def runtime_python_path() -> Path:
+    if os.name == "nt":
+        return runtime_dir() / "Scripts" / "python.exe"
+    return runtime_dir() / "bin" / "python"
 
 
 def effective_base_url() -> str:
@@ -204,3 +215,41 @@ def configured_storage() -> str:
     if transient:
         return "process environment"
     return str(read_metadata().get("storage", "unconfigured"))
+
+
+def runtime_has_pinned_sdk(python: Path | str) -> bool:
+    result = subprocess.run(
+        [str(python), "-c", "import openai; raise SystemExit(0 if openai.__version__ == '3.5.0' else 1)"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    return result.returncode == 0
+
+
+def ensure_runtime() -> Path:
+    python = runtime_python_path()
+    if python.is_file() and runtime_has_pinned_sdk(python):
+        return python
+    print("Preparing the one-time OpenAI image runtime. This does not send the API Key.")
+    create = subprocess.run(
+        [sys.executable, "-m", "venv", str(runtime_dir())],
+        check=False,
+    )
+    if create.returncode != 0 or not python.is_file():
+        raise ImagegenConfigError("failed to create the local Python runtime")
+    install = subprocess.run(
+        [
+            str(python),
+            "-m",
+            "pip",
+            "install",
+            "--disable-pip-version-check",
+            "--only-binary=:all:",
+            SDK_SPEC,
+        ],
+        check=False,
+    )
+    if install.returncode != 0 or not runtime_has_pinned_sdk(python):
+        raise ImagegenConfigError("failed to install the pinned OpenAI Python SDK")
+    return python

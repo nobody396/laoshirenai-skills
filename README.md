@@ -39,18 +39,16 @@ Skill 安装后即可被 Codex 自动发现，不需要安装 Plugin 或 MCP。
 macOS / Linux：
 
 ```bash
-python3 "${CODEX_HOME:-$HOME/.codex}/skills/laoshirenai-imagegen/scripts/configure.py"
-python3 "${CODEX_HOME:-$HOME/.codex}/skills/laoshirenai-imagegen/scripts/doctor.py"
+python3 "${CODEX_HOME:-$HOME/.codex}/skills/laoshirenai-imagegen/scripts/setup.py"
 ```
 
 Windows PowerShell：
 
 ```powershell
-py "$HOME\.codex\skills\laoshirenai-imagegen\scripts\configure.py"
-py "$HOME\.codex\skills\laoshirenai-imagegen\scripts\doctor.py"
+py -3 "$HOME\.codex\skills\laoshirenai-imagegen\scripts\setup.py"
 ```
 
-配置器会隐藏输入，不会把 Key 放进命令参数、Shell 历史或项目 `.env`。配置完成后，直接在 Codex 中说“生成一张……”或“编辑这张图片……”。
+这一个命令会隐藏读取 Key、准备固定版本的 OpenAI SDK、检查生图分组和 `gpt-image-2` 权限；不会产生付费图片，也不会把 Key 放进命令参数、Shell 历史或项目 `.env`。完成后直接在 Codex 中说“生成一张……”或“编辑这张图片……”。
 
 ## 固定接口
 

@@ -12,27 +12,21 @@ Use the OpenAI official imagegen CLI through a thin 老实人AI launcher. The te
 - Always run `scripts/imagegen.py`; never call the built-in image tool or `/v1/responses` image generation as a fallback.
 - Base URL is fixed to `https://api.laoshirenai.com/v1` and the model is fixed to `gpt-image-2`.
 - The image Key must come from the dedicated image group. Never reuse or overwrite the text-model Key.
-- Never request, echo, log, or pass a Key as a command argument. The user configures it once through `scripts/configure.py`.
+- Never request, echo, log, or pass a Key as a command argument. The user configures it once through `scripts/setup.py`.
 - Default to one image and one request. Do not automatically replay an ambiguous timeout because the upstream job may already have completed and been billed.
 - Never overwrite an existing output unless the user explicitly requests it.
 
 ## First use
 
-If `scripts/doctor.py --offline` reports that the Key is missing, ask the user to run this locally in an interactive terminal:
+If `scripts/doctor.py --offline` reports that the Key is missing, ask the user to run the one-time setup locally in an interactive terminal:
 
 Use `python3` on macOS/Linux and `py -3` on Windows.
 
 ```bash
-python3 /absolute/path/to/laoshirenai-imagegen/scripts/configure.py
+python3 /absolute/path/to/laoshirenai-imagegen/scripts/setup.py
 ```
 
-Do not accept the Key in chat. After configuration, run:
-
-```bash
-python3 /absolute/path/to/laoshirenai-imagegen/scripts/doctor.py
-```
-
-`doctor.py` only checks `/v1/models`; it does not generate or charge for an image.
+Do not accept the Key in chat. Setup securely stores the Key, prepares the pinned OpenAI SDK runtime, and checks `/v1/models`. It does not generate or charge for an image.
 
 ## Workflow
 

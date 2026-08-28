@@ -174,6 +174,32 @@ class ImagegenSkillTests(unittest.TestCase):
             self.assertEqual(ImageAPIHandler.requests[-1]["path"], "/v1/models")
             self.assertEqual(ImageAPIHandler.requests[-1]["authorization"], "Bearer unit-image-key")
 
+    def test_one_command_setup_configures_and_checks_access(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp, image_api_server() as base_url:
+            env = self.runtime_env(base_url)
+            env.pop("LAOSHIRENAI_IMAGE_API_KEY", None)
+            env["LAOSHIRENAI_IMAGEGEN_CONFIG_DIR"] = str(Path(raw_tmp) / "config")
+            secret = "unit-setup-key"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPTS_DIR / "setup.py"),
+                    "--stdin",
+                    "--storage",
+                    "file",
+                    "--skip-runtime",
+                ],
+                input=secret + "\n",
+                env=env,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Setup complete", result.stdout)
+            self.assertIn("Status: ready", result.stdout)
+            self.assertNotIn(secret, result.stdout + result.stderr)
+
     def test_doctor_rejects_redirect_without_forwarding_key(self) -> None:
         with image_api_server(RedirectAPIHandler) as base_url:
             result = subprocess.run(
