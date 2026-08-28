@@ -20,14 +20,16 @@ Use the OpenAI official imagegen CLI through a thin 老实人AI launcher. The te
 
 If `scripts/doctor.py --offline` reports that the Key is missing, ask the user to run this locally in an interactive terminal:
 
+Use `python3` on macOS/Linux and `py -3` on Windows.
+
 ```bash
-python /absolute/path/to/laoshirenai-imagegen/scripts/configure.py
+python3 /absolute/path/to/laoshirenai-imagegen/scripts/configure.py
 ```
 
 Do not accept the Key in chat. After configuration, run:
 
 ```bash
-python /absolute/path/to/laoshirenai-imagegen/scripts/doctor.py
+python3 /absolute/path/to/laoshirenai-imagegen/scripts/doctor.py
 ```
 
 `doctor.py` only checks `/v1/models`; it does not generate or charge for an image.
@@ -43,7 +45,7 @@ python /absolute/path/to/laoshirenai-imagegen/scripts/doctor.py
 Generate:
 
 ```bash
-python /absolute/path/to/laoshirenai-imagegen/scripts/imagegen.py generate \
+python3 /absolute/path/to/laoshirenai-imagegen/scripts/imagegen.py generate \
   --prompt "<prompt>" \
   --size 1024x1024 \
   --quality low \
@@ -53,7 +55,7 @@ python /absolute/path/to/laoshirenai-imagegen/scripts/imagegen.py generate \
 Edit one or more images:
 
 ```bash
-python /absolute/path/to/laoshirenai-imagegen/scripts/imagegen.py edit \
+python3 /absolute/path/to/laoshirenai-imagegen/scripts/imagegen.py edit \
   --image /absolute/path/source.png \
   --prompt "<change and invariants>" \
   --quality low \

@@ -27,8 +27,8 @@ Skill 安装后即可被 Codex 自动发现，不需要安装 Plugin 或 MCP。
 macOS / Linux：
 
 ```bash
-python "${CODEX_HOME:-$HOME/.codex}/skills/laoshirenai-imagegen/scripts/configure.py"
-python "${CODEX_HOME:-$HOME/.codex}/skills/laoshirenai-imagegen/scripts/doctor.py"
+python3 "${CODEX_HOME:-$HOME/.codex}/skills/laoshirenai-imagegen/scripts/configure.py"
+python3 "${CODEX_HOME:-$HOME/.codex}/skills/laoshirenai-imagegen/scripts/doctor.py"
 ```
 
 Windows PowerShell：
