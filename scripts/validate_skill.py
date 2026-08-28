@@ -46,6 +46,9 @@ def main() -> int:
         fail("skill description is empty")
     if "TODO" in skill_text:
         fail("unfinished TODO in SKILL.md")
+    interface_metadata = yaml.safe_load((SKILL / "agents" / "openai.yaml").read_text(encoding="utf-8"))
+    if interface_metadata.get("policy", {}).get("allow_implicit_invocation") is not True:
+        fail("implicit invocation must remain enabled")
 
     upstream = json.loads((SKILL / "UPSTREAM.json").read_text(encoding="utf-8"))
     official = SKILL / "vendor" / "openai-imagegen" / "scripts" / "image_gen.py"
