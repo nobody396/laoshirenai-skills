@@ -18,15 +18,15 @@ Use the OpenAI official imagegen CLI through a thin 老实人AI launcher. The te
 
 ## First use
 
-If `scripts/doctor.py --offline` reports that the Key is missing, ask the user to run the one-time setup locally in an interactive terminal:
-
-Use `python3` on macOS/Linux and `py -3` on Windows.
+If `scripts/doctor.py --offline` reports that the Key is missing, automatically start the local setup page in the foreground:
 
 ```bash
-python3 /absolute/path/to/laoshirenai-imagegen/scripts/setup.py
+python3 /absolute/path/to/laoshirenai-imagegen/scripts/setup_ui.py
 ```
 
-Do not accept the Key in chat. Setup securely stores the Key, prepares the pinned OpenAI SDK runtime, and checks `/v1/models`. It does not generate or charge for an image.
+Tell the user only: “已打开本机配置页，请粘贴独立生图 Key 并点击保存。” Do not ask the user to paste the Key into chat. The page binds only to `127.0.0.1`, stores the Key, prepares the pinned OpenAI SDK runtime, and checks `/v1/models`; it does not generate or charge for an image.
+
+When the setup process exits successfully, continue the original image request automatically. Do not ask the user to repeat it. If no browser can open, give the printed localhost URL. Use `scripts/setup.py` only as a terminal fallback.
 
 ## Workflow
 

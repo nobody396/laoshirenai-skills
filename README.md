@@ -32,23 +32,22 @@ https://github.com/nobody396/laoshirenai-skills/tree/main/skills/laoshirenai-ima
 
 Skill 安装后即可被 Codex 自动发现，不需要安装 Plugin 或 MCP。
 
-## 首次配置
+## 首次使用
 
-不要把 API Key 粘贴到聊天中。请在本机终端运行：
+安装后直接对 Codex 说：
 
-macOS / Linux：
-
-```bash
-python3 "${CODEX_HOME:-$HOME/.codex}/skills/laoshirenai-imagegen/scripts/setup.py"
+```text
+帮我生成一张产品宣传图
 ```
 
-Windows PowerShell：
+第一次使用时，Codex 会自动打开一个本机配置页。用户只需要：
 
-```powershell
-py -3 "$HOME\.codex\skills\laoshirenai-imagegen\scripts\setup.py"
-```
+1. 粘贴“GPT Image 2 生图分组”的独立 Key；
+2. 点击“保存并完成配置”。
 
-这一个命令会隐藏读取 Key、准备固定版本的 OpenAI SDK、检查生图分组和 `gpt-image-2` 权限；不会产生付费图片，也不会把 Key 放进命令参数、Shell 历史或项目 `.env`。完成后直接在 Codex 中说“生成一张……”或“编辑这张图片……”。
+页面会自动保存 Key、准备固定版本的 OpenAI SDK、检查生图分组和 `gpt-image-2` 权限。成功后 Codex 会继续刚才的生图请求，用户不需要重新提问。
+
+配置页只监听 `127.0.0.1`，不会产生付费图片，也不会把 Key 放进聊天、命令参数、Shell 历史或项目 `.env`。终端 `setup.py` 仅作为浏览器无法打开时的后备方式。
 
 ## 固定接口
 

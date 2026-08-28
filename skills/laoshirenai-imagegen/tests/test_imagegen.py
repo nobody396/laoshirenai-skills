@@ -11,6 +11,8 @@ import sys
 import tempfile
 import threading
 import unittest
+import urllib.parse
+import urllib.request
 
 
 SKILL_DIR = Path(__file__).resolve().parents[1]
@@ -209,6 +211,54 @@ class ImagegenSkillTests(unittest.TestCase):
             )
             self.assertEqual(version.returncode, 0, version.stderr)
             self.assertEqual(version.stdout.strip(), "3.5.0")
+
+    def test_browser_setup_accepts_key_only_on_loopback(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp, image_api_server() as base_url:
+            env = self.runtime_env(base_url)
+            env.pop("LAOSHIRENAI_IMAGE_API_KEY", None)
+            env["LAOSHIRENAI_IMAGEGEN_CONFIG_DIR"] = str(Path(raw_tmp) / "config")
+            process = subprocess.Popen(
+                [
+                    sys.executable,
+                    str(SCRIPTS_DIR / "setup_ui.py"),
+                    "--no-browser",
+                    "--storage",
+                    "file",
+                    "--skip-runtime",
+                    "--timeout",
+                    "30",
+                ],
+                env=env,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            self.assertIsNotNone(process.stdout)
+            first_line = process.stdout.readline().strip()
+            self.assertTrue(first_line.startswith("Setup URL: http://127.0.0.1:"), first_line)
+            url = first_line.removeprefix("Setup URL: ")
+            with urllib.request.urlopen(url, timeout=5) as response:
+                html = response.read().decode("utf-8")
+                self.assertEqual(response.headers.get("Cache-Control"), "no-store, max-age=0")
+                self.assertIn("type=\"password\"", html)
+                self.assertIn("frame-ancestors 'none'", response.headers.get("Content-Security-Policy", ""))
+            token = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)["token"][0]
+            secret = "unit-browser-key"
+            body = urllib.parse.urlencode({"token": token, "key": secret}).encode("utf-8")
+            request = urllib.request.Request(
+                urllib.parse.urljoin(url, "/configure"),
+                data=body,
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                method="POST",
+            )
+            with urllib.request.urlopen(request, timeout=10) as response:
+                result = json.loads(response.read())
+            self.assertTrue(result["ok"])
+            stdout, stderr = process.communicate(timeout=10)
+            self.assertEqual(process.returncode, 0, stderr)
+            self.assertNotIn(secret, first_line + stdout + stderr)
+            saved = Path(env["LAOSHIRENAI_IMAGEGEN_CONFIG_DIR"]) / "secret.key"
+            self.assertEqual(saved.read_text(encoding="utf-8").strip(), secret)
 
     def test_doctor_rejects_redirect_without_forwarding_key(self) -> None:
         with image_api_server(RedirectAPIHandler) as base_url:
