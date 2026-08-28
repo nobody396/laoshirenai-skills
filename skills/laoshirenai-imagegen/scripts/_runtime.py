@@ -56,8 +56,9 @@ def _atomic_write(path: Path, data: bytes, mode: int = 0o600) -> None:
     fd, raw_tmp = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
     tmp = Path(raw_tmp)
     try:
-        os.fchmod(fd, mode)
         with os.fdopen(fd, "wb") as handle:
+            if os.name != "nt":
+                os.fchmod(handle.fileno(), mode)
             handle.write(data)
             handle.flush()
             os.fsync(handle.fileno())
@@ -66,7 +67,7 @@ def _atomic_write(path: Path, data: bytes, mode: int = 0o600) -> None:
             path.chmod(mode)
     finally:
         if tmp.exists():
-            tmp.unlink()
+            tmp.unlink(missing_ok=True)
 
 
 def _secure_windows_file(path: Path) -> None:

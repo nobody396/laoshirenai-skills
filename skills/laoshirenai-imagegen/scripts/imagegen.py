@@ -47,6 +47,8 @@ def main() -> int:
         env = os.environ.copy()
         env["OPENAI_BASE_URL"] = effective_base_url()
         env["OPENAI_API_KEY"] = "dry-run-placeholder" if dry_run else load_secret()
+        env["PYTHONUTF8"] = "1"
+        env["PYTHONIOENCODING"] = "utf-8"
         enforced = ["--model", MODEL]
         if args[0] == "generate-batch":
             enforced += ["--concurrency", "1", "--max-attempts", "1"]
