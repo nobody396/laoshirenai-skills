@@ -1,4 +1,16 @@
-# 老实人AI独立生图 Skill
+# 老实人AI Skills
+
+面向老实人AI用户的公开 Agent Skills 仓库。每个 Skill 独立安装、独立配置；不要求安装 Plugin 或 MCP。
+
+## Skill 目录
+
+| Skill | 用途 | 状态 |
+|---|---|---|
+| [`laoshirenai-imagegen`](skills/laoshirenai-imagegen) | 通过独立生图 Key 调用 `gpt-image-2` 生成和编辑图片 | macOS / Linux / Windows 已测试 |
+
+后续面向用户的 Skills 统一放在 `skills/<skill-name>/`，彼此不共享密钥或运行状态。
+
+## laoshirenai-imagegen
 
 让 Codex 使用独立的老实人AI生图 Key 调用 `gpt-image-2`。文本模型不需要具备生图能力。
 
@@ -15,7 +27,7 @@
 在 Codex 中调用 `$skill-installer`，让它安装：
 
 ```text
-https://github.com/nobody396/laoshirenai-imagegen-skill/tree/main/skills/laoshirenai-imagegen
+https://github.com/nobody396/laoshirenai-skills/tree/main/skills/laoshirenai-imagegen
 ```
 
 Skill 安装后即可被 Codex 自动发现，不需要安装 Plugin 或 MCP。
