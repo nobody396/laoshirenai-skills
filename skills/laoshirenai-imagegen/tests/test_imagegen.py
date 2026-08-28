@@ -187,7 +187,6 @@ class ImagegenSkillTests(unittest.TestCase):
                     "--stdin",
                     "--storage",
                     "file",
-                    "--skip-runtime",
                 ],
                 input=secret + "\n",
                 env=env,
@@ -199,6 +198,17 @@ class ImagegenSkillTests(unittest.TestCase):
             self.assertIn("Setup complete", result.stdout)
             self.assertIn("Status: ready", result.stdout)
             self.assertNotIn(secret, result.stdout + result.stderr)
+            runtime = Path(env["LAOSHIRENAI_IMAGEGEN_CONFIG_DIR"]) / "runtime"
+            runtime_python = runtime / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+            self.assertTrue(runtime_python.is_file())
+            version = subprocess.run(
+                [str(runtime_python), "-c", "import openai; print(openai.__version__)"],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(version.returncode, 0, version.stderr)
+            self.assertEqual(version.stdout.strip(), "3.5.0")
 
     def test_doctor_rejects_redirect_without_forwarding_key(self) -> None:
         with image_api_server(RedirectAPIHandler) as base_url:
