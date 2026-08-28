@@ -1,0 +1,9 @@
+This product includes an unmodified copy of the OpenAI imagegen CLI and its
+reference materials from:
+
+  https://github.com/openai/skills
+  commit 49f948faa9258a0c61caceaf225e179651397431
+  path skills/.system/imagegen
+
+Those upstream files are licensed under Apache License 2.0. The 老实人AI
+SKILL.md, credential configuration, doctor, and launcher are separate additions.

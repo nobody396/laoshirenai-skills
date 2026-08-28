@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  skill-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@v6
+      - name: Validate Skill package
+        shell: bash
+        run: uv run --quiet --with pyyaml python scripts/validate_skill.py
+      - name: Run mock Images API tests
+        shell: bash
+        run: python -m unittest discover -s skills/laoshirenai-imagegen/tests -v

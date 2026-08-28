@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/openai/skills.git",
+  "commit": "49f948faa9258a0c61caceaf225e179651397431",
+  "path": "skills/.system/imagegen",
+  "script_sha256": "eaffd8fe4cde5722d748cc35729a03438d6b8fda5e84edd46ea1ce521d41f58b",
+  "license": "Apache-2.0",
+  "modified": false
+}

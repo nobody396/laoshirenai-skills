@@ -1,0 +1,4 @@
+interface:
+  display_name: "老实人AI 生图"
+  short_description: "Generate and edit images with 老实人AI"
+  default_prompt: "Generate or edit the requested raster image through the dedicated 老实人AI Images API and save the result into the project."
